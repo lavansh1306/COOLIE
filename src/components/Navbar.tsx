@@ -6,18 +6,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Moon, Sun, Luggage } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Book Porter", href: "/book" },
-  { label: "Porter Dashboard", href: "/porter" },
-  { label: "Admin", href: "/admin" },
-];
+import { useI18n } from "@/components/I18nProvider";
+import { LOCALE_OPTIONS, Locale } from "@/lib/i18n";
 
 export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { dict, locale, setLocale } = useI18n();
+
+  const navLinks = [
+    { label: dict.navbar.home, href: "/" },
+    { label: dict.navbar.bookPorter, href: "/book" },
+    { label: dict.navbar.porterDashboard, href: "/porter" },
+    { label: dict.navbar.admin, href: "/admin" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -47,7 +50,7 @@ export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -64,6 +67,20 @@ export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 pr-1">
+            <span className="text-xs text-muted-foreground">{dict.navbar.language}</span>
+            <select
+              value={locale}
+              onChange={(e) => setLocale(e.target.value as Locale)}
+              className="h-8 rounded-lg border border-input bg-background px-2 text-xs dark:text-white"
+            >
+              {LOCALE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             onClick={toggleDark}
             className="p-2 rounded-xl text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-all"
@@ -72,7 +89,7 @@ export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark
           </button>
           <Link href="/book" className="hidden md:block">
             <Button className="bg-orange hover:bg-orange/90 text-white rounded-xl px-5 h-9 text-sm font-semibold shadow-none">
-              Book Now
+              {dict.navbar.bookNow}
             </Button>
           </Link>
           <button
@@ -94,7 +111,7 @@ export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark
             className="md:hidden glass border-t border-white/20 dark:border-white/10"
           >
             <div className="px-4 py-3 flex flex-col gap-1">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -108,9 +125,25 @@ export default function Navbar({ dark, toggleDark }: { dark: boolean; toggleDark
                   {link.label}
                 </Link>
               ))}
+
+              <div className="px-4 py-2 mt-1 rounded-xl bg-background/70 border border-border">
+                <label className="text-xs text-muted-foreground mb-1 block">{dict.navbar.language}</label>
+                <select
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value as Locale)}
+                  className="w-full h-9 rounded-lg border border-input bg-background px-2 text-sm dark:text-white"
+                >
+                  {LOCALE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <Link href="/book" onClick={() => setOpen(false)}>
                 <Button className="w-full mt-2 bg-orange hover:bg-orange/90 text-white rounded-xl">
-                  Book Now
+                  {dict.navbar.bookNow}
                 </Button>
               </Link>
             </div>

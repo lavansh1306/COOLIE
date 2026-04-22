@@ -12,46 +12,19 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatsBar from "@/components/StatsBar";
+import { useI18n } from "@/components/I18nProvider";
 
 const HeroCanvas = dynamic(() => import("@/components/HeroCanvas"), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FEATURES = [
-  {
-    icon: QrCode,
-    title: "Pre-book via PNR",
-    desc: "Enter your PNR and we'll match you with a verified porter before your train arrives.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Transparent Pricing",
-    desc: "No hidden charges. See the price upfront, negotiate if needed, pay only what's agreed.",
-  },
-  {
-    icon: CreditCard,
-    title: "Secure Payments",
-    desc: "UPI, cards, wallets — all payment methods supported with end-to-end encryption.",
-  },
-];
-
-const HOW_IT_WORKS_PASSENGER = [
-  { step: "01", title: "Enter PNR", desc: "Input your train PNR to auto-fetch station details." },
-  { step: "02", title: "Choose Porter", desc: "Browse verified porters with ratings and live pricing." },
-  { step: "03", title: "Confirm & Pay", desc: "Lock in your porter and pay securely via UPI or card." },
-  { step: "04", title: "Relax", desc: "Your porter meets you at the platform. Luggage handled." },
-];
-
-const HOW_IT_WORKS_PORTER = [
-  { step: "01", title: "Register", desc: "Sign up with Aadhaar verification in under 5 minutes." },
-  { step: "02", title: "Get Requests", desc: "Receive job requests from nearby passengers in real-time." },
-  { step: "03", title: "Complete Job", desc: "Assist the passenger and complete the trip." },
-  { step: "04", title: "Get Paid", desc: "Instant payment directly to your bank account." },
-];
-
 export default function LandingPage() {
   const featuresRef = useRef<HTMLDivElement>(null);
   const howRef = useRef<HTMLDivElement>(null);
+  const { dict } = useI18n();
+
+  const featureIcons = [QrCode, ShieldCheck, CreditCard];
+  const impactIcons = [TrendingUp, Star];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -96,7 +69,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 bg-orange/10 text-orange text-xs font-semibold px-4 py-2 rounded-full mb-6"
             >
               <span className="w-1.5 h-1.5 bg-orange rounded-full animate-pulse" />
-              Now live in 120+ stations across India
+              {dict.landing.liveBadge}
             </motion.div>
 
             <motion.h1
@@ -105,13 +78,13 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight dark:text-white"
             >
-              Dignifying
+              {dict.landing.heroLine1}
               <br />
-              <span className="text-orange">Transit,</span>
+              <span className="text-orange">{dict.landing.heroAccent}</span>
               <br />
-              Digitizing
+              {dict.landing.heroLine3}
               <br />
-              Convenience
+              {dict.landing.heroLine4}
             </motion.h1>
 
             <motion.p
@@ -120,8 +93,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.25 }}
               className="mt-6 text-lg text-muted-foreground max-w-md leading-relaxed"
             >
-              Coolie connects railway passengers with verified, trained porters — making luggage assistance
-              seamless, safe, and dignified for everyone.
+              {dict.landing.heroDesc}
             </motion.p>
 
             <motion.div
@@ -132,13 +104,13 @@ export default function LandingPage() {
             >
               <Link href="/book">
                 <Button className="bg-orange hover:bg-orange/90 text-white rounded-2xl px-8 h-12 text-base font-semibold shadow-lg shadow-orange/25 group">
-                  Book a Porter
+                  {dict.landing.heroBookCta}
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link href="/porter">
                 <Button variant="outline" className="rounded-2xl px-8 h-12 text-base font-semibold border-border hover:border-orange hover:text-orange dark:text-white">
-                  Become a Porter
+                  {dict.landing.heroPorterCta}
                 </Button>
               </Link>
             </motion.div>
@@ -157,7 +129,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <div className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground dark:text-white">2,000+</span> porters ready to help
+                <span className="font-semibold text-foreground dark:text-white">2,000+</span> {dict.landing.heroPortersReady}
               </div>
             </motion.div>
           </div>
@@ -192,7 +164,7 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="text-orange text-sm font-semibold uppercase tracking-widest mb-3"
             >
-              Why Coolie
+              {dict.landing.whyTag}
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -200,23 +172,25 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="text-4xl sm:text-5xl font-bold dark:text-white"
             >
-              Built for the modern traveller
+              {dict.landing.whyTitle}
             </motion.h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {FEATURES.map((f) => (
-              <div
-                key={f.title}
+            {dict.landing.features.map((feature, idx) => {
+              const Icon = featureIcons[idx];
+              return (
+                <div
+                key={feature.title}
                 className="feature-card glass rounded-3xl p-8 dark:glass-dark group hover:border-orange/30 border border-transparent transition-all duration-300"
               >
                 <div className="w-12 h-12 rounded-2xl bg-orange/10 flex items-center justify-center mb-6 group-hover:bg-orange/20 transition-colors">
-                  <f.icon className="w-6 h-6 text-orange" />
+                  {Icon && <Icon className="w-6 h-6 text-orange" />}
                 </div>
-                <h3 className="text-xl font-bold mb-3 dark:text-white">{f.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{f.desc}</p>
+                <h3 className="text-xl font-bold mb-3 dark:text-white">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
               </div>
-            ))}
+            )})}
           </div>
         </div>
       </section>
@@ -225,8 +199,8 @@ export default function LandingPage() {
       <section ref={howRef} className="py-24 px-4 sm:px-6 bg-secondary/30 dark:bg-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-orange text-sm font-semibold uppercase tracking-widest mb-3">Simple Process</p>
-            <h2 className="text-4xl sm:text-5xl font-bold dark:text-white">How it works</h2>
+            <p className="text-orange text-sm font-semibold uppercase tracking-widest mb-3">{dict.landing.processTag}</p>
+            <h2 className="text-4xl sm:text-5xl font-bold dark:text-white">{dict.landing.processTitle}</h2>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12">
@@ -236,10 +210,10 @@ export default function LandingPage() {
                 <div className="w-8 h-8 rounded-xl bg-orange flex items-center justify-center">
                   <Smartphone className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="text-xl font-bold dark:text-white">For Passengers</h3>
+                <h3 className="text-xl font-bold dark:text-white">{dict.landing.passengerTitle}</h3>
               </div>
               <div className="space-y-4">
-                {HOW_IT_WORKS_PASSENGER.map((s) => (
+                {dict.landing.passengerSteps.map((s) => (
                   <div key={s.step} className="step-card flex gap-5 p-5 rounded-2xl bg-card border border-border hover:border-orange/30 transition-all">
                     <div className="text-3xl font-black text-orange/20 leading-none w-10 flex-shrink-0">{s.step}</div>
                     <div>
@@ -257,10 +231,10 @@ export default function LandingPage() {
                 <div className="w-8 h-8 rounded-xl bg-gray-800 dark:bg-white flex items-center justify-center">
                   <Users className="w-4 h-4 text-white dark:text-gray-900" />
                 </div>
-                <h3 className="text-xl font-bold dark:text-white">For Porters</h3>
+                <h3 className="text-xl font-bold dark:text-white">{dict.landing.porterTitle}</h3>
               </div>
               <div className="space-y-4">
-                {HOW_IT_WORKS_PORTER.map((s) => (
+                {dict.landing.porterSteps.map((s) => (
                   <div key={s.step} className="step-card flex gap-5 p-5 rounded-2xl bg-card border border-border hover:border-orange/30 transition-all">
                     <div className="text-3xl font-black text-orange/20 leading-none w-10 flex-shrink-0">{s.step}</div>
                     <div>
@@ -285,27 +259,26 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-orange text-sm font-semibold uppercase tracking-widest mb-4">Social Impact</p>
+              <p className="text-orange text-sm font-semibold uppercase tracking-widest mb-4">{dict.landing.impactTag}</p>
               <h2 className="text-4xl sm:text-5xl font-bold leading-tight dark:text-white">
-                Empowering gig workers,
+                {dict.landing.impactTitleLine1}
                 <br />
-                <span className="text-orange">one trip at a time</span>
+                <span className="text-orange">{dict.landing.impactTitleAccent}</span>
               </h2>
               <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                India's railway porters — the unsung heroes of transit — deserve better. Coolie gives them
-                digital identity, fair pay, and consistent work. We're not just an app; we're a movement.
+                {dict.landing.impactDesc}
               </p>
               <div className="mt-8 grid grid-cols-2 gap-4">
-                {[
-                  { icon: TrendingUp, label: "Avg income increase", value: "3.2×" },
-                  { icon: Star, label: "Porter satisfaction", value: "96%" },
-                ].map((item) => (
-                  <div key={item.label} className="p-5 rounded-2xl bg-secondary/50 dark:bg-white/5">
-                    <item.icon className="w-5 h-5 text-orange mb-2" />
-                    <div className="text-2xl font-bold dark:text-white">{item.value}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
-                  </div>
-                ))}
+                {dict.landing.impactCards.map((item, idx) => {
+                  const Icon = impactIcons[idx];
+                  return (
+                    <div key={item.label} className="p-5 rounded-2xl bg-secondary/50 dark:bg-white/5">
+                      {Icon && <Icon className="w-5 h-5 text-orange mb-2" />}
+                      <div className="text-2xl font-bold dark:text-white">{item.value}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
+                    </div>
+                  );
+                })}
               </div>
             </motion.div>
 
@@ -316,18 +289,15 @@ export default function LandingPage() {
               transition={{ duration: 0.6 }}
               className="glass dark:glass-dark rounded-3xl p-8 border border-white/30"
             >
-              <div className="text-sm font-semibold text-muted-foreground mb-6">What porters say</div>
-              {[
-                { name: "Ramesh Kumar", station: "New Delhi", quote: "Coolie gave me a steady income and respect. I earn 3x more than before.", rating: 5 },
-                { name: "Suresh Yadav", station: "Mumbai CST", quote: "No more waiting for passengers. Jobs come to me on my phone.", rating: 5 },
-              ].map((t) => (
+              <div className="text-sm font-semibold text-muted-foreground mb-6">{dict.landing.testimonialsTitle}</div>
+              {dict.landing.testimonials.map((t) => (
                 <div key={t.name} className="mb-6 last:mb-0 p-5 rounded-2xl bg-white/50 dark:bg-white/5 border border-white/30">
                   <div className="flex gap-1 mb-3">
                     {Array.from({ length: t.rating }).map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-sm text-foreground dark:text-white leading-relaxed">"{t.quote}"</p>
+                  <p className="text-sm text-foreground dark:text-white leading-relaxed">{`"${t.quote}"`}</p>
                   <div className="mt-3 text-xs text-muted-foreground font-medium">{t.name} · {t.station}</div>
                 </div>
               ))}
@@ -350,21 +320,21 @@ export default function LandingPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
             <div className="relative z-10">
               <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-                Ready to travel light?
+                {dict.landing.ctaTitle}
               </h2>
               <p className="text-white/80 text-lg mb-8 max-w-md mx-auto">
-                Book a verified porter in under 60 seconds. Your next journey starts here.
+                {dict.landing.ctaDesc}
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Link href="/book">
                   <Button className="bg-white text-orange hover:bg-white/90 rounded-2xl px-8 h-12 text-base font-bold shadow-xl group">
-                    Book a Porter
+                    {dict.landing.ctaBook}
                     <ChevronRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href="/porter">
                   <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-2xl px-8 h-12 text-base font-semibold">
-                    Join as Porter
+                    {dict.landing.ctaJoin}
                   </Button>
                 </Link>
               </div>
@@ -382,11 +352,11 @@ export default function LandingPage() {
             </div>
             <span className="font-bold dark:text-white">Coolie</span>
           </div>
-          <p className="text-sm text-muted-foreground">© 2025 Coolie Technologies Pvt. Ltd. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">{dict.landing.copyright}</p>
           <div className="flex gap-4 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-orange transition-colors">Privacy</a>
-            <a href="#" className="hover:text-orange transition-colors">Terms</a>
-            <a href="#" className="hover:text-orange transition-colors">Contact</a>
+            <a href="#" className="hover:text-orange transition-colors">{dict.landing.privacy}</a>
+            <a href="#" className="hover:text-orange transition-colors">{dict.landing.terms}</a>
+            <a href="#" className="hover:text-orange transition-colors">{dict.landing.contact}</a>
           </div>
         </div>
       </footer>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Star, MapPin, Briefcase, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/components/I18nProvider";
 
 interface Porter {
   id: string;
@@ -26,6 +27,8 @@ interface PorterCardProps {
 }
 
 export default function PorterCard({ porter, selected, onSelect }: PorterCardProps) {
+  const { dict } = useI18n();
+
   return (
     <motion.div
       whileHover={{ y: -4, boxShadow: "0 20px 60px rgba(255,106,0,0.12)" }}
@@ -58,7 +61,7 @@ export default function PorterCard({ porter, selected, onSelect }: PorterCardPro
               </Badge>
             )}
             {!porter.available && (
-              <Badge variant="secondary" className="text-xs">Busy</Badge>
+              <Badge variant="secondary" className="text-xs">{dict.porterCard.busy}</Badge>
             )}
           </div>
 
@@ -74,14 +77,14 @@ export default function PorterCard({ porter, selected, onSelect }: PorterCardPro
             </span>
             <span className="flex items-center gap-1">
               <Briefcase className="w-3 h-3" />
-              {porter.completedJobs} jobs
+              {porter.completedJobs} {dict.porterCard.jobs}
             </span>
           </div>
         </div>
 
         <div className="text-right flex-shrink-0">
           <div className="text-lg font-bold text-orange">₹{porter.price}</div>
-          <div className="text-xs text-muted-foreground">per trip</div>
+          <div className="text-xs text-muted-foreground">{dict.porterCard.perTrip}</div>
         </div>
       </div>
 
@@ -94,7 +97,7 @@ export default function PorterCard({ porter, selected, onSelect }: PorterCardPro
           }`}
           onClick={(e) => { e.stopPropagation(); onSelect(porter.id); }}
         >
-          {selected ? "Selected" : "Select Porter"}
+          {selected ? dict.porterCard.selected : dict.porterCard.selectPorter}
         </Button>
       )}
     </motion.div>

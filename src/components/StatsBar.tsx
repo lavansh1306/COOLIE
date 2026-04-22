@@ -2,15 +2,17 @@
 
 import { motion } from "framer-motion";
 import { STATS } from "@/lib/data";
-
-const items = [
-  { label: "Passengers Served", value: STATS.totalPassengers },
-  { label: "Verified Porters", value: STATS.totalPorters },
-  { label: "Cities Covered", value: STATS.citiesCovered },
-  { label: "Avg Rating", value: STATS.avgRating + "★" },
-];
+import { useI18n } from "@/components/I18nProvider";
 
 export default function StatsBar() {
+  const { dict } = useI18n();
+  const items = [
+    { label: dict.statsBar.passengersServed, value: STATS.totalPassengers },
+    { label: dict.statsBar.verifiedPorters, value: STATS.totalPorters },
+    { label: dict.statsBar.citiesCovered, value: STATS.citiesCovered },
+    { label: dict.statsBar.avgRating, value: STATS.avgRating + "★" },
+  ];
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {items.map((item, i) => (
