@@ -2,17 +2,15 @@
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&height=230&color=0:0f172a,30:1e293b,70:ea580c,100:fb923c&text=COOLIE&fontSize=68&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Digitizing%20Railway%20Luggage%20Assistance&descAlignY=60" alt="COOLIE banner" />
 
-<h1>
-  <span style="background: linear-gradient(90deg,#fb923c,#f97316,#f59e0b); -webkit-background-clip:text; color:transparent;">COOLIE</span>
-</h1>
+## ✨ COOLIE
 
 <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=22&duration=2600&pause=850&color=F97316&center=true&vCenter=true&multiline=true&width=900&height=80&lines=Book+Verified+Railway+Porters+in+Seconds;Passenger+Flow+%7C+Porter+Dashboard+%7C+Admin+Overview;Next.js+16+%2B+React+19+%2B+TypeScript+%2B+Three.js" alt="Typing animation" />
 
 <br/>
 
-![Next.js](https://img.shields.io/badge/Next.js-16.2.4-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React-19.2.4-20232a?style=for-the-badge&logo=react&logoColor=61dafb)
-![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-App%20Router-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-Client%20Components-20232a?style=for-the-badge&logo=react&logoColor=61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict%20Mode-3178c6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Prototype-orange?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-0.1.0-f97316?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Not%20Specified-lightgrey?style=for-the-badge)
