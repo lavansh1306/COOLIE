@@ -91,8 +91,8 @@ flowchart LR
   D --> V[Passenger / Porter / Admin Views]
   I --> V
 
-  note1[Current implementation is fully client-side.\nNo backend API or DB in repository yet.]
-  D -.-> note1
+  X[Current implementation is fully client-side.\nNo backend API or DB in repository yet.]
+  D -.-> X
 ```
 
 ---
