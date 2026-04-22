@@ -12,11 +12,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { PORTER_JOBS, EARNINGS, BOOKINGS } from "@/lib/data";
 import Link from "next/link";
+import { useI18n } from "@/components/I18nProvider";
+import { interpolate } from "@/lib/i18n";
 
 export default function PorterDashboard() {
+  const { dict } = useI18n();
+  const t = dict.porter;
+
   const [jobs, setJobs] = useState(PORTER_JOBS);
   const [accepted, setAccepted] = useState<string[]>([]);
-  const [rejected, setRejected] = useState<string[]>([]);
 
   const handleAccept = (id: string) => {
     setAccepted((prev) => [...prev, id]);
@@ -24,7 +28,6 @@ export default function PorterDashboard() {
   };
 
   const handleReject = (id: string) => {
-    setRejected((prev) => [...prev, id]);
     setJobs((prev) => prev.filter((j) => j.id !== id));
   };
 
@@ -36,8 +39,8 @@ export default function PorterDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold dark:text-white">Porter Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Welcome back, Ramesh Kumar</p>
+            <h1 className="text-3xl font-bold dark:text-white">{t.title}</h1>
+            <p className="text-muted-foreground mt-1">{t.welcome}</p>
           </div>
           <div className="relative">
             <div className="w-10 h-10 rounded-2xl bg-orange/10 flex items-center justify-center cursor-pointer hover:bg-orange/20 transition-colors">
@@ -54,10 +57,10 @@ export default function PorterDashboard() {
         {/* Earnings Overview */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Today", value: `₹${EARNINGS.today}`, icon: IndianRupee, color: "text-green-500" },
-            { label: "This Week", value: `₹${EARNINGS.week.toLocaleString()}`, icon: TrendingUp, color: "text-blue-500" },
-            { label: "Total Jobs", value: EARNINGS.totalJobs.toLocaleString(), icon: Briefcase, color: "text-purple-500" },
-            { label: "Rating", value: `${EARNINGS.rating}★`, icon: Star, color: "text-yellow-500" },
+            { label: t.today, value: `₹${EARNINGS.today}`, icon: IndianRupee, color: "text-green-500" },
+            { label: t.thisWeek, value: `₹${EARNINGS.week.toLocaleString()}`, icon: TrendingUp, color: "text-blue-500" },
+            { label: t.totalJobs, value: EARNINGS.totalJobs.toLocaleString(), icon: Briefcase, color: "text-purple-500" },
+            { label: t.rating, value: `${EARNINGS.rating}★`, icon: Star, color: "text-yellow-500" },
           ].map((item, i) => (
             <motion.div
               key={item.label}
@@ -76,20 +79,20 @@ export default function PorterDashboard() {
         {/* Completion Rate */}
         <div className="glass dark:glass-dark rounded-2xl p-5 border border-white/30 mb-8">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold dark:text-white">Completion Rate</span>
+            <span className="text-sm font-semibold dark:text-white">{t.completionRate}</span>
             <span className="text-sm font-bold text-orange">{EARNINGS.completionRate}%</span>
           </div>
           <Progress value={EARNINGS.completionRate} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-2">Keep it above 90% to maintain Top Rated status</p>
+          <p className="text-xs text-muted-foreground mt-2">{t.completionHint}</p>
         </div>
 
         <Tabs defaultValue="requests">
           <TabsList className="w-full rounded-2xl mb-6 h-11">
             <TabsTrigger value="requests" className="flex-1 rounded-xl text-sm">
-              Requests {jobs.length > 0 && <span className="ml-1.5 w-4 h-4 bg-orange text-white rounded-full text-xs flex items-center justify-center">{jobs.length}</span>}
+              {t.tabRequests} {jobs.length > 0 && <span className="ml-1.5 w-4 h-4 bg-orange text-white rounded-full text-xs flex items-center justify-center">{jobs.length}</span>}
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex-1 rounded-xl text-sm">History</TabsTrigger>
-            <TabsTrigger value="ratings" className="flex-1 rounded-xl text-sm">Ratings</TabsTrigger>
+            <TabsTrigger value="history" className="flex-1 rounded-xl text-sm">{t.tabHistory}</TabsTrigger>
+            <TabsTrigger value="ratings" className="flex-1 rounded-xl text-sm">{t.tabRatings}</TabsTrigger>
           </TabsList>
 
           {/* Job Requests */}
@@ -104,8 +107,8 @@ export default function PorterDashboard() {
                   <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
                     <Clock className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <p className="font-medium dark:text-white">No pending requests</p>
-                  <p className="text-sm mt-1">New job requests will appear here</p>
+                  <p className="font-medium dark:text-white">{t.noPending}</p>
+                  <p className="text-sm mt-1">{t.noPendingHint}</p>
                 </motion.div>
               ) : (
                 <div className="space-y-4">
@@ -122,7 +125,7 @@ export default function PorterDashboard() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-semibold dark:text-white">{job.passenger}</span>
-                            <Badge className="bg-orange/10 text-orange border-0 text-xs">New</Badge>
+                            <Badge className="bg-orange/10 text-orange border-0 text-xs">{t.newBadge}</Badge>
                           </div>
                           <span className="text-xs text-muted-foreground">{job.time}</span>
                         </div>
@@ -135,12 +138,12 @@ export default function PorterDashboard() {
                       <div className="space-y-2 mb-5">
                         <div className="flex items-center gap-2 text-sm">
                           <div className="w-2 h-2 rounded-full bg-orange flex-shrink-0" />
-                          <span className="text-muted-foreground">From:</span>
+                          <span className="text-muted-foreground">{t.from}</span>
                           <span className="dark:text-white font-medium">{job.from}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                          <span className="text-muted-foreground">To:</span>
+                          <span className="text-muted-foreground">{t.to}</span>
                           <span className="dark:text-white font-medium">{job.to}</span>
                         </div>
                       </div>
@@ -151,13 +154,13 @@ export default function PorterDashboard() {
                           className="flex-1 rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 dark:border-red-900 dark:hover:bg-red-900/20"
                           onClick={() => handleReject(job.id)}
                         >
-                          <XCircle className="w-4 h-4 mr-2" /> Decline
+                          <XCircle className="w-4 h-4 mr-2" /> {t.decline}
                         </Button>
                         <Button
                           className="flex-1 rounded-xl bg-orange hover:bg-orange/90 text-white"
                           onClick={() => handleAccept(job.id)}
                         >
-                          <CheckCircle className="w-4 h-4 mr-2" /> Accept
+                          <CheckCircle className="w-4 h-4 mr-2" /> {t.accept}
                         </Button>
                       </div>
                     </motion.div>
@@ -169,7 +172,7 @@ export default function PorterDashboard() {
             {accepted.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                 <p className="text-sm text-green-700 dark:text-green-400 font-medium flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4" /> {accepted.length} job{accepted.length > 1 ? "s" : ""} accepted — head to the platform!
+                  <CheckCircle className="w-4 h-4" /> {interpolate(t.acceptedHint, { count: accepted.length })} - {t.headToPlatform}
                 </p>
               </motion.div>
             )}
@@ -220,7 +223,7 @@ export default function PorterDashboard() {
                       <Star key={i} className={`w-4 h-4 ${i < Math.floor(EARNINGS.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
                     ))}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">312 reviews</div>
+                  <div className="text-xs text-muted-foreground mt-1">{t.reviewsCount}</div>
                 </div>
                 <div className="flex-1 space-y-2">
                   {[5, 4, 3, 2, 1].map((star) => {
@@ -260,7 +263,7 @@ export default function PorterDashboard() {
                       <span className="text-xs text-muted-foreground ml-1">{r.date}</span>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">"{r.comment}"</p>
+                  <p className="text-sm text-muted-foreground">{`"${r.comment}"`}</p>
                 </motion.div>
               ))}
             </div>
@@ -269,12 +272,12 @@ export default function PorterDashboard() {
 
         <div className="mt-8 p-5 rounded-2xl bg-orange/5 border border-orange/20 flex items-center justify-between">
           <div>
-            <p className="font-semibold dark:text-white text-sm">This month's earnings</p>
+            <p className="font-semibold dark:text-white text-sm">{t.monthEarnings}</p>
             <p className="text-2xl font-bold text-orange mt-1">₹{EARNINGS.month.toLocaleString()}</p>
           </div>
           <Link href="/admin">
             <Button variant="outline" className="rounded-xl border-orange/30 text-orange hover:bg-orange/10 text-sm">
-              View Full Report <ChevronRight className="w-4 h-4 ml-1" />
+              {t.viewFullReport} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
         </div>

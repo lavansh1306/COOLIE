@@ -13,8 +13,8 @@ import { Progress } from "@/components/ui/progress";
 import PorterCard from "@/components/PorterCard";
 import { PORTERS, STATIONS } from "@/lib/data";
 import Link from "next/link";
-
-const STEPS = ["PNR & Station", "Choose Porter", "Confirm", "Payment"];
+import { useI18n } from "@/components/I18nProvider";
+import { interpolate } from "@/lib/i18n";
 
 const slide = {
   initial: { opacity: 0, x: 40 },
@@ -24,6 +24,9 @@ const slide = {
 };
 
 export default function BookPage() {
+  const { dict } = useI18n();
+  const t = dict.book;
+
   const [step, setStep] = useState(0);
   const [pnr, setPnr] = useState("");
   const [station, setStation] = useState("");
@@ -34,9 +37,11 @@ export default function BookPage() {
   const [upiId, setUpiId] = useState("");
   const [booked, setBooked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [bookingId, setBookingId] = useState("");
 
   const porter = PORTERS.find((p) => p.id === selectedPorter);
   const finalPrice = negotiatedPrice ?? porter?.price ?? 0;
+  const steps = t.steps;
 
   const canNext = () => {
     if (step === 0) return pnr.length >= 10 && station && dropLocation;
@@ -46,7 +51,11 @@ export default function BookPage() {
 
   const handlePay = () => {
     setLoading(true);
-    setTimeout(() => { setLoading(false); setBooked(true); }, 2000);
+    setTimeout(() => {
+      setBookingId("BK" + Math.floor(Math.random() * 900000 + 100000));
+      setLoading(false);
+      setBooked(true);
+    }, 2000);
   };
 
   if (booked) {
@@ -61,22 +70,22 @@ export default function BookPage() {
           <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
-          <h1 className="text-3xl font-bold dark:text-white mb-3">Booking Confirmed!</h1>
+          <h1 className="text-3xl font-bold dark:text-white mb-3">{t.bookedTitle}</h1>
           <p className="text-muted-foreground mb-2">
-            <span className="font-semibold text-foreground dark:text-white">{porter?.name}</span> will meet you at{" "}
+            <span className="font-semibold text-foreground dark:text-white">{porter?.name}</span> {t.bookedWillMeet}{" "}
             <span className="text-orange font-semibold">{station}</span>
           </p>
           <p className="text-muted-foreground mb-8">
-            Amount paid: <span className="font-bold text-foreground dark:text-white">₹{finalPrice}</span>
+            {t.amountPaid}: <span className="font-bold text-foreground dark:text-white">₹{finalPrice}</span>
           </p>
           <div className="glass dark:glass-dark rounded-2xl p-5 mb-8 text-left border border-white/30">
-            <div className="text-xs text-muted-foreground mb-3 font-semibold uppercase tracking-wider">Booking Details</div>
+            <div className="text-xs text-muted-foreground mb-3 font-semibold uppercase tracking-wider">{t.bookingDetails}</div>
             {[
-              ["Booking ID", "BK" + Math.floor(Math.random() * 900000 + 100000)],
-              ["PNR", pnr],
-              ["Porter", porter?.name ?? ""],
-              ["Drop", dropLocation],
-              ["Amount", `₹${finalPrice}`],
+              [t.bookingId, bookingId],
+              [t.pnr, pnr],
+              [t.porter, porter?.name ?? ""],
+              [t.drop, dropLocation],
+              [t.amount, `₹${finalPrice}`],
             ].map(([k, v]) => (
               <div key={k} className="flex justify-between py-2 border-b border-border last:border-0 text-sm">
                 <span className="text-muted-foreground">{k}</span>
@@ -86,13 +95,13 @@ export default function BookPage() {
           </div>
           <div className="flex gap-3">
             <Link href="/" className="flex-1">
-              <Button variant="outline" className="w-full rounded-2xl">Back to Home</Button>
+              <Button variant="outline" className="w-full rounded-2xl">{t.backHome}</Button>
             </Link>
             <Button
               className="flex-1 bg-orange hover:bg-orange/90 text-white rounded-2xl"
-              onClick={() => { setBooked(false); setStep(0); setPnr(""); setStation(""); setDropLocation(""); setSelectedPorter(null); setNegotiatedPrice(null); }}
+              onClick={() => { setBooked(false); setStep(0); setPnr(""); setStation(""); setDropLocation(""); setSelectedPorter(null); setNegotiatedPrice(null); setBookingId(""); }}
             >
-              New Booking
+              {t.newBooking}
             </Button>
           </div>
         </motion.div>
@@ -105,19 +114,19 @@ export default function BookPage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange transition-colors mb-6">
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> {t.back}
           </Link>
-          <h1 className="text-3xl font-bold dark:text-white">Book a Porter</h1>
-          <p className="text-muted-foreground mt-1">Luggage assistance in under 60 seconds</p>
+          <h1 className="text-3xl font-bold dark:text-white">{t.title}</h1>
+          <p className="text-muted-foreground mt-1">{t.subtitle}</p>
         </div>
 
         <div className="mb-8">
           <div className="flex justify-between mb-3">
-            {STEPS.map((s, i) => (
+            {steps.map((s, i) => (
               <div key={s} className={`text-xs font-medium transition-colors ${i <= step ? "text-orange" : "text-muted-foreground"}`}>{s}</div>
             ))}
           </div>
-          <Progress value={((step + 1) / STEPS.length) * 100} className="h-1.5" />
+          <Progress value={((step + 1) / steps.length) * 100} className="h-1.5" />
         </div>
 
         <AnimatePresence mode="wait">
@@ -129,45 +138,45 @@ export default function BookPage() {
                     <Train className="w-5 h-5 text-orange" />
                   </div>
                   <div>
-                    <h2 className="font-bold dark:text-white">Train Details</h2>
-                    <p className="text-xs text-muted-foreground">Enter your PNR to get started</p>
+                    <h2 className="font-bold dark:text-white">{t.trainDetailsTitle}</h2>
+                    <p className="text-xs text-muted-foreground">{t.trainDetailsHint}</p>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-sm font-medium dark:text-white mb-2 block">PNR Number</Label>
+                    <Label className="text-sm font-medium dark:text-white mb-2 block">{t.pnrLabel}</Label>
                     <Input
-                      placeholder="e.g. 4521876543"
+                      placeholder={t.pnrPlaceholder}
                       value={pnr}
                       onChange={(e) => setPnr(e.target.value.replace(/\D/g, "").slice(0, 10))}
                       className="rounded-xl h-12 text-base font-mono"
                     />
                     {pnr.length > 0 && pnr.length < 10 && (
-                      <p className="text-xs text-muted-foreground mt-1">{10 - pnr.length} more digits needed</p>
+                      <p className="text-xs text-muted-foreground mt-1">{interpolate(t.pnrDigitsNeeded, { count: 10 - pnr.length })}</p>
                     )}
                     {pnr.length === 10 && (
                       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-green-500 mt-1 flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" /> PNR verified
+                        <CheckCircle className="w-3 h-3" /> {t.pnrVerified}
                       </motion.p>
                     )}
                   </div>
                   <div>
-                    <Label className="text-sm font-medium dark:text-white mb-2 block">Boarding Station</Label>
+                    <Label className="text-sm font-medium dark:text-white mb-2 block">{t.stationLabel}</Label>
                     <select
                       value={station}
                       onChange={(e) => setStation(e.target.value)}
                       className="w-full h-12 rounded-xl border border-input bg-background px-3 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-orange/50"
                     >
-                      <option value="">Select station</option>
+                      <option value="">{t.stationPlaceholder}</option>
                       {STATIONS.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium dark:text-white mb-2 block">Drop Location</Label>
+                    <Label className="text-sm font-medium dark:text-white mb-2 block">{t.dropLabel}</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        placeholder="e.g. Exit Gate B, Taxi Stand, Parking"
+                        placeholder={t.dropPlaceholder}
                         value={dropLocation}
                         onChange={(e) => setDropLocation(e.target.value)}
                         className="rounded-xl h-12 pl-10"
@@ -182,8 +191,13 @@ export default function BookPage() {
           {step === 1 && (
             <motion.div key="step1" {...slide} className="space-y-4">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-bold text-lg dark:text-white">Available Porters</h2>
-                <span className="text-xs text-muted-foreground">{PORTERS.filter(p => p.available).length} near {station.split(" ")[0]}</span>
+                <h2 className="font-bold text-lg dark:text-white">{t.availablePorters}</h2>
+                <span className="text-xs text-muted-foreground">
+                  {interpolate(t.availableNear, {
+                    count: PORTERS.filter((p) => p.available).length,
+                    station: station.split(" ")[0] || station,
+                  })}
+                </span>
               </div>
               {PORTERS.map((p) => (
                 <PorterCard key={p.id} porter={p} selected={selectedPorter === p.id} onSelect={setSelectedPorter} />
@@ -194,7 +208,7 @@ export default function BookPage() {
           {step === 2 && porter && (
             <motion.div key="step2" {...slide} className="space-y-5">
               <div className="glass dark:glass-dark rounded-3xl p-6 border border-white/30">
-                <h2 className="font-bold text-lg dark:text-white mb-5">Booking Summary</h2>
+                <h2 className="font-bold text-lg dark:text-white mb-5">{t.bookingSummary}</h2>
                 <div className="flex items-center gap-4 p-4 rounded-2xl bg-orange/5 border border-orange/20 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-orange/10 flex items-center justify-center">
                     <span className="text-orange font-bold">{porter.avatar}</span>
@@ -203,12 +217,12 @@ export default function BookPage() {
                     <div className="font-semibold dark:text-white">{porter.name}</div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                       <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      {porter.rating} · {porter.experience} experience
+                      {porter.rating} · {porter.experience} {t.experienceSuffix}
                     </div>
                   </div>
                   <div className="text-xl font-bold text-orange">₹{finalPrice}</div>
                 </div>
-                {[["From", station], ["To", dropLocation], ["PNR", pnr]].map(([k, v]) => (
+                {[[t.from, station], [t.to, dropLocation], [t.pnr, pnr]].map(([k, v]) => (
                   <div key={k} className="flex justify-between py-3 border-b border-border last:border-0 text-sm">
                     <span className="text-muted-foreground">{k}</span>
                     <span className="font-medium dark:text-white text-right max-w-[60%]">{v}</span>
@@ -216,8 +230,8 @@ export default function BookPage() {
                 ))}
                 <div className="mt-5 p-4 rounded-2xl bg-secondary/50 dark:bg-white/5">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold dark:text-white">Negotiate Price</span>
-                    <span className="text-xs text-muted-foreground">Porter asks ₹{porter.price}</span>
+                    <span className="text-sm font-semibold dark:text-white">{t.negotiatePrice}</span>
+                    <span className="text-xs text-muted-foreground">{interpolate(t.porterAsks, { amount: porter.price })}</span>
                   </div>
                   <div className="flex gap-2">
                     {[porter.price - 20, porter.price - 10, porter.price, porter.price + 10].filter(p => p > 0).map((price) => (
@@ -232,7 +246,7 @@ export default function BookPage() {
                       </button>
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">Porter will accept or counter your offer</p>
+                  <p className="text-xs text-muted-foreground mt-2">{t.counterOfferHint}</p>
                 </div>
               </div>
             </motion.div>
@@ -241,16 +255,16 @@ export default function BookPage() {
           {step === 3 && (
             <motion.div key="step3" {...slide} className="space-y-5">
               <div className="glass dark:glass-dark rounded-3xl p-6 border border-white/30">
-                <h2 className="font-bold text-lg dark:text-white mb-5">Payment</h2>
+                <h2 className="font-bold text-lg dark:text-white mb-5">{t.paymentTitle}</h2>
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-orange/5 border border-orange/20 mb-6">
-                  <span className="text-muted-foreground text-sm">Total Amount</span>
+                  <span className="text-muted-foreground text-sm">{t.totalAmount}</span>
                   <span className="text-2xl font-bold text-orange">₹{finalPrice}</span>
                 </div>
                 <div className="space-y-3 mb-6">
                   {[
-                    { id: "upi" as const, icon: Smartphone, label: "UPI", desc: "Pay via any UPI app" },
-                    { id: "card" as const, icon: CreditCard, label: "Card", desc: "Credit / Debit card" },
-                    { id: "wallet" as const, icon: Wallet, label: "Wallet", desc: "Paytm, PhonePe, etc." },
+                    { id: "upi" as const, icon: Smartphone, label: "UPI", desc: t.paymentUpiDesc },
+                    { id: "card" as const, icon: CreditCard, label: "Card", desc: t.paymentCardDesc },
+                    { id: "wallet" as const, icon: Wallet, label: "Wallet", desc: t.paymentWalletDesc },
                   ].map((m) => (
                     <button
                       key={m.id}
@@ -272,12 +286,12 @@ export default function BookPage() {
                 </div>
                 {payMethod === "upi" && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mb-4">
-                    <Label className="text-sm font-medium dark:text-white mb-2 block">UPI ID</Label>
-                    <Input placeholder="yourname@upi" value={upiId} onChange={(e) => setUpiId(e.target.value)} className="rounded-xl h-12" />
+                    <Label className="text-sm font-medium dark:text-white mb-2 block">{t.upiIdLabel}</Label>
+                    <Input placeholder={t.upiPlaceholder} value={upiId} onChange={(e) => setUpiId(e.target.value)} className="rounded-xl h-12" />
                   </motion.div>
                 )}
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-5">
-                  <Lock className="w-3 h-3" /> Secured by 256-bit SSL encryption
+                  <Lock className="w-3 h-3" /> {t.paymentSecurity}
                 </div>
                 <Button
                   className="w-full bg-orange hover:bg-orange/90 text-white rounded-2xl h-12 text-base font-bold shadow-lg shadow-orange/25"
@@ -287,9 +301,9 @@ export default function BookPage() {
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Processing...
+                      {t.processing}
                     </span>
-                  ) : `Pay ₹${finalPrice}`}
+                  ) : interpolate(t.payNow, { amount: finalPrice })}
                 </Button>
               </div>
             </motion.div>
@@ -300,7 +314,7 @@ export default function BookPage() {
           <div className="flex gap-3 mt-6">
             {step > 0 && (
               <Button variant="outline" className="flex-1 rounded-2xl h-12" onClick={() => setStep(step - 1)}>
-                <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                <ArrowLeft className="w-4 h-4 mr-2" /> {t.back}
               </Button>
             )}
             <Button
@@ -308,7 +322,7 @@ export default function BookPage() {
               disabled={!canNext()}
               onClick={() => setStep(step + 1)}
             >
-              {step === 2 ? "Proceed to Pay" : "Continue"}
+              {step === 2 ? t.proceedToPay : t.continue}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>

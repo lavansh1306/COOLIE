@@ -10,14 +10,18 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BOOKINGS, PORTERS } from "@/lib/data";
-
-const STATUS_CONFIG = {
-  completed: { label: "Completed", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
-  active: { label: "Active", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Clock },
-  pending: { label: "Pending", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", icon: AlertCircle },
-};
+import { useI18n } from "@/components/I18nProvider";
 
 export default function AdminPage() {
+  const { dict } = useI18n();
+  const t = dict.admin;
+
+  const STATUS_CONFIG = {
+    completed: { label: t.statusCompleted, color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
+    active: { label: t.statusActive, color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Clock },
+    pending: { label: t.statusPending, color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", icon: AlertCircle },
+  };
+
   const [bookingSearch, setBookingSearch] = useState("");
   const [porterSearch, setPorterSearch] = useState("");
 
@@ -42,19 +46,19 @@ export default function AdminPage() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 bg-orange/10 text-orange text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
             <span className="w-1.5 h-1.5 bg-orange rounded-full" />
-            Admin Panel
+            {t.panelTag}
           </div>
-          <h1 className="text-3xl font-bold dark:text-white">System Overview</h1>
-          <p className="text-muted-foreground mt-1">Monitor bookings, porters, and platform health</p>
+          <h1 className="text-3xl font-bold dark:text-white">{t.title}</h1>
+          <p className="text-muted-foreground mt-1">{t.subtitle}</p>
         </div>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total Bookings", value: BOOKINGS.length, icon: Briefcase, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20" },
-            { label: "Active Porters", value: PORTERS.filter(p => p.available).length, icon: Users, color: "text-green-500", bg: "bg-green-50 dark:bg-green-900/20" },
-            { label: "Revenue", value: `₹${totalRevenue}`, icon: IndianRupee, color: "text-orange", bg: "bg-orange/10" },
-            { label: "Completion Rate", value: `${Math.round((completedCount / BOOKINGS.length) * 100)}%`, icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/20" },
+            { label: t.totalBookings, value: BOOKINGS.length, icon: Briefcase, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20" },
+            { label: t.activePorters, value: PORTERS.filter(p => p.available).length, icon: Users, color: "text-green-500", bg: "bg-green-50 dark:bg-green-900/20" },
+            { label: t.revenue, value: `₹${totalRevenue}`, icon: IndianRupee, color: "text-orange", bg: "bg-orange/10" },
+            { label: t.completionRate, value: `${Math.round((completedCount / BOOKINGS.length) * 100)}%`, icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/20" },
           ].map((kpi, i) => (
             <motion.div
               key={kpi.label}
@@ -74,8 +78,8 @@ export default function AdminPage() {
 
         <Tabs defaultValue="bookings">
           <TabsList className="w-full rounded-2xl mb-6 h-11">
-            <TabsTrigger value="bookings" className="flex-1 rounded-xl text-sm">Bookings ({BOOKINGS.length})</TabsTrigger>
-            <TabsTrigger value="porters" className="flex-1 rounded-xl text-sm">Porters ({PORTERS.length})</TabsTrigger>
+            <TabsTrigger value="bookings" className="flex-1 rounded-xl text-sm">{t.tabBookings} ({BOOKINGS.length})</TabsTrigger>
+            <TabsTrigger value="porters" className="flex-1 rounded-xl text-sm">{t.tabPorters} ({PORTERS.length})</TabsTrigger>
           </TabsList>
 
           {/* Bookings Table */}
@@ -83,7 +87,7 @@ export default function AdminPage() {
             <div className="mb-4 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search by passenger, porter, or booking ID..."
+                placeholder={t.bookingSearchPlaceholder}
                 value={bookingSearch}
                 onChange={(e) => setBookingSearch(e.target.value)}
                 className="pl-10 rounded-xl h-11"
@@ -95,7 +99,7 @@ export default function AdminPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border">
-                    {["Booking ID", "Passenger", "Porter", "Route", "Amount", "Status", "Date"].map((h) => (
+                    {[t.tableBookingId, t.tablePassenger, t.tablePorter, t.tableRoute, t.tableAmount, t.tableStatus, t.tableDate].map((h) => (
                       <th key={h} className="text-left text-xs font-semibold text-muted-foreground px-5 py-4 uppercase tracking-wider">{h}</th>
                     ))}
                   </tr>
@@ -149,7 +153,7 @@ export default function AdminPage() {
                       </span>
                     </div>
                     <div className="text-sm font-medium dark:text-white mb-1">{b.passenger}</div>
-                    <div className="text-xs text-muted-foreground mb-2">Porter: {b.porter}</div>
+                    <div className="text-xs text-muted-foreground mb-2">{t.porterPrefix} {b.porter}</div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">{b.date}</span>
                       <span className="font-bold text-sm dark:text-white">₹{b.amount}</span>
@@ -165,7 +169,7 @@ export default function AdminPage() {
             <div className="mb-4 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search porters..."
+                placeholder={t.porterSearchPlaceholder}
                 value={porterSearch}
                 onChange={(e) => setPorterSearch(e.target.value)}
                 className="pl-10 rounded-xl h-11"
@@ -192,7 +196,7 @@ export default function AdminPage() {
                           <Badge className="text-xs bg-orange/10 text-orange border-0 px-2 py-0">{p.badge}</Badge>
                         )}
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${p.available ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"}`}>
-                          {p.available ? "Available" : "Busy"}
+                          {p.available ? t.available : t.busy}
                         </span>
                       </div>
                       <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
@@ -200,13 +204,13 @@ export default function AdminPage() {
                           <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                           {p.rating} ({p.reviews})
                         </span>
-                        <span>{p.completedJobs} jobs</span>
+                        <span>{p.completedJobs} {t.jobs}</span>
                         <span>{p.experience}</span>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
                       <div className="text-lg font-bold text-orange">₹{p.price}</div>
-                      <div className="text-xs text-muted-foreground">per trip</div>
+                      <div className="text-xs text-muted-foreground">{t.perTrip}</div>
                     </div>
                   </div>
                 </motion.div>
