@@ -42,7 +42,7 @@
 
 ### Backend / Database / APIs
 - **Backend:** No server/API routes implemented yet (client-side app).
-- **Database:** No database integration yet.
+- **Database:**No database integration yet.
 - **External APIs:** None currently used.
 - **Data Source:** Local mock data (`src/lib/data.ts`).
 
