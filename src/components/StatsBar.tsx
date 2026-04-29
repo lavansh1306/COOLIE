@@ -1,16 +1,48 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { STATS } from "@/lib/data";
 import { useI18n } from "@/components/I18nProvider";
+
+interface PlatformStats {
+  totalPassengers: string;
+  verifiedPorters: string;
+  citiesCovered: string;
+  avgRating: string;
+}
 
 export default function StatsBar() {
   const { dict } = useI18n();
+  const [stats, setStats] = useState<PlatformStats>({
+    totalPassengers: "50,000+",
+    verifiedPorters: "2,000+",
+    citiesCovered: "120+",
+    avgRating: "4.8",
+  });
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await fetch("/api/stats", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as { stats: PlatformStats };
+        setStats(data.stats);
+      } catch {
+        // Keep the seeded fallback values if the API is unavailable.
+      }
+    };
+
+    void loadStats();
+  }, []);
+
   const items = [
-    { label: dict.statsBar.passengersServed, value: STATS.totalPassengers },
-    { label: dict.statsBar.verifiedPorters, value: STATS.totalPorters },
-    { label: dict.statsBar.citiesCovered, value: STATS.citiesCovered },
-    { label: dict.statsBar.avgRating, value: STATS.avgRating + "★" },
+    { label: dict.statsBar.passengersServed, value: stats.totalPassengers },
+    { label: dict.statsBar.verifiedPorters, value: stats.verifiedPorters },
+    { label: dict.statsBar.citiesCovered, value: stats.citiesCovered },
+    { label: dict.statsBar.avgRating, value: `${stats.avgRating}★` },
   ];
 
   return (

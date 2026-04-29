@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { I18nProvider } from "@/components/I18nProvider";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const geistSans = Geist({ variable: "--font-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -29,10 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="description" content="Book verified railway porters in seconds. Coolie connects passengers with trained porters across 120+ Indian railway stations." />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
-        <I18nProvider>
-          <Navbar dark={dark} toggleDark={toggleDark} />
-          {children}
-        </I18nProvider>
+        <AuthProvider>
+          <I18nProvider>
+            <Navbar dark={dark} toggleDark={toggleDark} />
+            {children}
+          </I18nProvider>
+        </AuthProvider>
       </body>
     </html>
   );

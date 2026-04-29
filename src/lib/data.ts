@@ -1,4 +1,4 @@
-// Mock data for Coolie platform
+// Seed data for the local SQLite database.
 
 export const PORTERS = [
   {
