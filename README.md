@@ -1,13 +1,11 @@
 <div align="center">
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&height=230&color=0:0f172a,30:1e293b,70:ea580c,100:fb923c&text=COOLIE&fontSize=68&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Digitizing%20Railway%20Luggage%20Assistance&descAlignY=60" alt="COOLIE banner" />
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=22&duration=2600&pause=850&color=F97316&center=true&vCenter=true&multiline=true&width=900&height=80&lines=Book+Verified+Railway+Porters+in+Seconds;Passenger+Flow+%7C+Porter+Dashboard+%7C+Admin+Overview;Next.js+16+%2B+React+19+%2B+TypeScript+%2B+Three.js" alt="Typing animation" />
 
 <h1>
   <span style="background: linear-gradient(90deg,#fb923c,#f97316,#f59e0b); -webkit-background-clip:text; color:transparent;">COOLIE</span>
-</h1>
-
-<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=22&duration=2600&pause=850&color=F97316&center=true&vCenter=true&multiline=true&width=900&height=80&lines=Book+Verified+Railway+Porters+in+Seconds;Passenger+Flow+%7C+Porter+Dashboard+%7C+Admin+Overview;Next.js+16+%2B+React+19+%2B+TypeScript+%2B+Three.js" alt="Typing animation" />
-
+</h1
 <br/>
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.2.4-000000?style=for-the-badge&logo=next.js&logoColor=white)
